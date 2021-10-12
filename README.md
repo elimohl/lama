@@ -2,7 +2,7 @@
 
 Official implementation by Samsung Research
 
-by Roman Suvorov, Elizaveta Logacheva, Anton Mashikhin, 
+by Roman Suvorov, Elizaveta Logacheva, Anton Mashikhin,
 Anastasia Remizova, Arsenii Ashukha, Aleksei Silvestrov, Naejin Kong, Harshith Goka, Kiwoong Park, Victor Lempitsky.
 
 [[Project page](https://github.com/saic-mdal/lama)] [[arXiv](https://arxiv.org/abs/2109.07161)] [[Supplementary](https://ashukha.com/projects/lama_21/lama_supmat_2021.pdf)] [[BibTeX](https://senya-ashukha.github.io/projects/lama_21/paper.txt)]
@@ -32,13 +32,13 @@ There are three options of an environment:
     virtualenv inpenv --python=/usr/bin/python3
     source inpenv/bin/activate
     pip install torch==1.8.0 torchvision==0.9.0
-    
+
     cd lama
-    pip install -r requirements.txt 
+    pip install -r requirements.txt
     ```
 
 2. Conda
-    
+
     ```
     % Install conda for Linux, for other OS download miniconda at https://docs.conda.io/en/latest/miniconda.html
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -51,7 +51,7 @@ There are three options of an environment:
     conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch -y
     pip install pytorch-lightning==1.2.9
     ```
- 
+
 3. Docker: No actions are needed 🎉.
 
 # Inference <a name="prediction"></a>
@@ -71,8 +71,8 @@ pip3 install wldhx.yadisk-direct
 ```
 
 The best model (Places):
-    
-```    
+
+```
 curl -L $(yadisk-direct https://disk.yandex.ru/d/ouP6l8VJ0HpMZg) -o big-lama.zip
 unzip big-lama.zip
 ```
@@ -94,11 +94,11 @@ unzip LaMa_test_images.zip
 ```
 <details>
  <summary>OR prepare your data:</summary>
-1) Create masks named as `[images_name]_maskXXX[image_suffix]`, put images and masks in the same folder. 
+1) Create masks named as `[images_name]_maskXXX[image_suffix]`, put images and masks in the same folder.
 
-- You can use the [script](#test_datasets) for random masks generation. 
+- You can use the [script](#test_datasets) for random masks generation.
 - Check the format of the files:
-    ```    
+    ```
     image1_mask001.png
     image1.png
     image2_mask001.png
@@ -117,7 +117,7 @@ On the host machine:
     python3 bin/predict.py model.path=$(pwd)/big-lama indir=$(pwd)/LaMa_test_images outdir=$(pwd)/output
 
 **OR** in the docker
-  
+
 The following command will pull the docker image from Docker Hub and execute the prediction script
 ```
 bash docker/2_predict.sh $(pwd)/big-lama $(pwd)/LaMa_test_images $(pwd)/output device=cpu
@@ -155,7 +155,7 @@ On the host machine:
     bash fetch_data/places_standard_train_prepare.sh
     bash fetch_data/places_standard_test_val_prepare.sh
     bash fetch_data/places_standard_evaluation_prepare_data.sh
-    
+
     # Sample images for test and viz at the end of epoch
     bash fetch_data/places_standard_test_val_sample.sh
     bash fetch_data/places_standard_test_val_gen_masks.sh
@@ -163,8 +163,8 @@ On the host machine:
     # Run training
     # You can change bs with data.batch_size=10
     python bin/train.py -cn lama-fourier location=places_standard
-    
-    # Infer model on thick/thin/medium masks in 256 and 512 and run evaluation 
+
+    # Infer model on thick/thin/medium masks in 256 and 512 and run evaluation
     # like this:
     python3 bin/predict.py \
     model.path=$(pwd)/experiments/<user>_<date:time>_lama-fourier_/ \
@@ -176,32 +176,32 @@ On the host machine:
     $(pwd)/places_standard_dataset/evaluation/random_thick_512/ \
     $(pwd)/inference/random_thick_512 $(pwd)/inference/random_thick_512_metrics.csv
 
-    
-    
+
+
 Docker: TODO
-    
+
 ## CelebA
 On the host machine:
 
-    TODO: download & prepare 
+    TODO: download & prepare
     TODO: trian
     TODO: eval
-    
-    
+
+
 Docker: TODO
 
-## Places Challenge 
+## Places Challenge
 
 On the host machine:
 
     # This script downloads multiple .tar files in parallel and unpacks them
-    # Places365-Challenge: Train(476GB) from High-resolution images (to train Big-Lama) 
+    # Places365-Challenge: Train(476GB) from High-resolution images (to train Big-Lama)
     bash places_challenge_train_download.sh
-    
+
     TODO: prepare
-    TODO: train 
+    TODO: train
     TODO: eval
-      
+
 Docker: TODO
 
 ## Create your data
@@ -210,15 +210,15 @@ On the host machine:
 Explain explain explain
 
     TODO: format
-    TODO: configs 
+    TODO: configs
     TODO: run training
     TODO: run eval
-    
+
 **OR** in the docker:
 
     TODO: train
     TODO: eval
-    
+
 # Hints
 
 ### Generate different kinds of masks
@@ -242,7 +242,7 @@ Note that we *do not fix a random seed*, so the results will be slightly differe
 | Medium | random_medium_512.yaml | random_medium_256.yaml |
 | Wide   | random_thick_512.yaml  | random_thick_256.yaml  |
 
-Feel free to change the config path (argument #1) to any other config in `configs/data_gen` 
+Feel free to change the config path (argument #1) to any other config in `configs/data_gen`
 or adjust config files themselves.
 
 ### Override parameters in configs
@@ -252,8 +252,8 @@ Also you can override parameters in config like this:
 
 Where .yaml file extension is omitted
 
-### Models options 
-Config names for models from paper (substitude into the training command): 
+### Models options
+Config names for models from paper (substitude into the training command):
 
     * big-lama
     * big-lama-regular
@@ -281,7 +281,7 @@ TODO: IPython with tables?
 * FID is from [mseitzer](https://github.com/mseitzer/pytorch-fid)
 
 ## Citation
-If you found this code helpful, please consider citing: 
+If you found this code helpful, please consider citing:
 ```
 @article{suvorov2021resolution,
   title={Resolution-robust Large Mask Inpainting with Fourier Convolutions},
