@@ -180,12 +180,49 @@ On the host machine:
 
 Docker: TODO
 
-## CelebA
+## CelebA-HQ
 On the host machine:
 
-    TODO: download & prepare
-    TODO: trian
-    TODO: eval
+    # Download CelebA-HQ dataset
+    # Download data256x256.zip from https://drive.google.com/drive/folders/11Vz0fqHS2rXDb5pprgTjpD7S2BAJhi1P
+
+    # Unpack
+    unzip data256x256.zip
+
+    # Reindex
+    for i in `echo {00001..30000}`
+    do
+        mv 'data256x256/$'i'.jpg' 'data256x256/'$((i - 1))'.jpg'
+    done
+
+    # Split
+    for mode in train \
+        test \
+        val
+    do
+        mkdir $mode"_256"
+        cat celeba_hq_split/$mode"_shuffled.flist" | xargs -I {} mv data256x256/{} $mode"_256/"
+    done
+
+    # Generate masks for val and test
+    # ????
+
+    # Run training
+    # You can change bs with data.batch_size=10
+    python bin/train.py -cn lama-fourier location=celeba_hq_standard data=abl-04-256-mh-dist-celeba trainer.kwargs.val_check_interval=2600
+
+    # Infer model on thick/thin/medium masks in 256 and run evaluation
+    # like this:
+    python3 bin/predict.py \
+    model.path=$(pwd)/experiments/<user>_<date:time>_lama-fourier_/ \
+    indir=$(pwd)/CelebA-HQ/evaluation/random_thick_256/ \
+    outdir=$(pwd)/inference/random_thick_256 model.checkpoint=last.ckpt
+
+    python3 bin/evaluate_predicts.py \
+    $(pwd)/configs/eval_2gpu.yaml \
+    $(pwd)/CelebA-HQ/evaluation/random_thick_256/ \
+    $(pwd)/inference/random_thick_256 $(pwd)/inference/random_thick_256_metrics.csv
+
 
 
 Docker: TODO
@@ -236,7 +273,7 @@ which is suitable for [prediction](#prediction).
 The table below describes which configs we used to generate different test sets from the paper.
 Note that we *do not fix a random seed*, so the results will be slightly different each time.
 
-|        | Places 512x512         | CelebA 256x256         |
+|        | Places 512x512         | CelebA-HQ 256x256      |
 |--------|------------------------|------------------------|
 | Narrow | random_thin_512.yaml   | random_thin_256.yaml   |
 | Medium | random_medium_512.yaml | random_medium_256.yaml |
@@ -279,6 +316,7 @@ TODO: IPython with tables?
 * LPIPS metric is from [richzhang](https://github.com/richzhang/PerceptualSimilarity)
 * SSIM is from [Po-Hsun-Su](https://github.com/Po-Hsun-Su/pytorch-ssim)
 * FID is from [mseitzer](https://github.com/mseitzer/pytorch-fid)
+* [CelebA HQ](CelebA-HQ) pre-calculated dataset is from [suvojit-0x55aa](https://github.com/suvojit-0x55aa/celebA-HQ-dataset-download)
 
 ## Citation
 If you found this code helpful, please consider citing:
