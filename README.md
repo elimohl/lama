@@ -192,7 +192,7 @@ On the host machine:
     # Reindex
     for i in `echo {00001..30000}`
     do
-        mv 'data256x256/'$i'.jpg' 'data256x256/'$((i - 1))'.jpg'
+        mv 'data256x256/'$i'.jpg' 'data256x256/'$[10#$i - 1]'.jpg'
     done
 
     # Split
